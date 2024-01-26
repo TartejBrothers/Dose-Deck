@@ -9,12 +9,14 @@ import SwiftUI
 import Firebase
 @main
 struct Dose_DeckApp: App {
+    @StateObject private var datamanager = DataManager()
     init(){
         FirebaseApp.configure()
     }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+//            ContentView()
+            ListView().environmentObject(datamanager)
         }
     }
 }

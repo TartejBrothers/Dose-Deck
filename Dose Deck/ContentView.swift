@@ -3,7 +3,16 @@ import Firebase
 struct ContentView: View {
     @State private var email=""
     @State private var password=""
+    @State private var userIsLogged=false
     var body: some View {
+        if userIsLogged{
+            ListView()
+        }
+        else{
+            content 
+        }
+    }
+    var content : some View{
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
 
@@ -83,6 +92,12 @@ struct ContentView: View {
                             
                         
                         }
+                    }
+                }
+            }.onAppear(){
+                Auth.auth().addStateDidChangeListener { auth, user in
+                    if user != nil{
+                        userIsLogged.toggle()
                     }
                 }
             }
