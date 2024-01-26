@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0849C75E2B63BC5D00D64E61 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0849C75D2B63BC5D00D64E61 /* GoogleService-Info.plist */; };
 		08A142572B638FB200802989 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 08A142562B638FB200802989 /* FirebaseAnalytics */; };
 		08A142592B638FB200802989 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 08A142582B638FB200802989 /* FirebaseAnalyticsOnDeviceConversion */; };
 		08A1425B2B638FB200802989 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08A1425A2B638FB200802989 /* FirebaseAnalyticsSwift */; };
@@ -41,6 +42,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0849C75D2B63BC5D00D64E61 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		08D375FA2B63704100423E16 /* Dose Deck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dose Deck.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08D375FD2B63704100423E16 /* Dose_DeckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dose_DeckApp.swift; sourceTree = "<group>"; };
 		08D375FF2B63704100423E16 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			children = (
 				08D375FD2B63704100423E16 /* Dose_DeckApp.swift */,
 				08D375FF2B63704100423E16 /* ContentView.swift */,
+				0849C75D2B63BC5D00D64E61 /* GoogleService-Info.plist */,
 				08D376012B63704200423E16 /* Assets.xcassets */,
 				08D376032B63704200423E16 /* Preview Content */,
 			);
@@ -213,6 +216,7 @@
 			files = (
 				08D376052B63704200423E16 /* Preview Assets.xcassets in Resources */,
 				08D376022B63704200423E16 /* Assets.xcassets in Resources */,
+				0849C75E2B63BC5D00D64E61 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
