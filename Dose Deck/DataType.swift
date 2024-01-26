@@ -12,4 +12,5 @@ struct DataType: Identifiable {
     var medicine: String
     var hours: Int
     var minutes: Int
+    var isSelected: Bool
 }

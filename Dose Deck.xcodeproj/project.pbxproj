@@ -38,7 +38,7 @@
 		08A142872B638FB200802989 /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08A142862B638FB200802989 /* FirebaseRemoteConfigSwift */; };
 		08A142892B638FB200802989 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 08A142882B638FB200802989 /* FirebaseStorage */; };
 		08A1428B2B638FB200802989 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 08A1428A2B638FB200802989 /* FirebaseStorageCombine-Community */; };
-		08CDBB782B64349D0053739F /* NewMed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CDBB772B64349D0053739F /* NewMed.swift */; };
+		08CDBB7A2B643B890053739F /* NewMed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CDBB792B643B890053739F /* NewMed.swift */; };
 		08D375FE2B63704100423E16 /* Dose_DeckApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D375FD2B63704100423E16 /* Dose_DeckApp.swift */; };
 		08D376002B63704100423E16 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D375FF2B63704100423E16 /* ContentView.swift */; };
 		08D376022B63704200423E16 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08D376012B63704200423E16 /* Assets.xcassets */; };
@@ -50,7 +50,7 @@
 		0849C7612B63C2FD00D64E61 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		0849C7632B63C63E00D64E61 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		0849C7672B63C69700D64E61 /* DataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataType.swift; sourceTree = "<group>"; };
-		08CDBB772B64349D0053739F /* NewMed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMed.swift; sourceTree = "<group>"; };
+		08CDBB792B643B890053739F /* NewMed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMed.swift; sourceTree = "<group>"; };
 		08D375FA2B63704100423E16 /* Dose Deck.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dose Deck.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		08D375FD2B63704100423E16 /* Dose_DeckApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dose_DeckApp.swift; sourceTree = "<group>"; };
 		08D375FF2B63704100423E16 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -119,8 +119,8 @@
 				08D375FF2B63704100423E16 /* ContentView.swift */,
 				0849C7612B63C2FD00D64E61 /* ListView.swift */,
 				0849C7632B63C63E00D64E61 /* DataManager.swift */,
+				08CDBB792B643B890053739F /* NewMed.swift */,
 				0849C7672B63C69700D64E61 /* DataType.swift */,
-				08CDBB772B64349D0053739F /* NewMed.swift */,
 				0849C75D2B63BC5D00D64E61 /* GoogleService-Info.plist */,
 				08D376012B63704200423E16 /* Assets.xcassets */,
 				08D376032B63704200423E16 /* Preview Content */,
@@ -242,7 +242,7 @@
 				08D376002B63704100423E16 /* ContentView.swift in Sources */,
 				0849C7682B63C69700D64E61 /* DataType.swift in Sources */,
 				08D375FE2B63704100423E16 /* Dose_DeckApp.swift in Sources */,
-				08CDBB782B64349D0053739F /* NewMed.swift in Sources */,
+				08CDBB7A2B643B890053739F /* NewMed.swift in Sources */,
 				0849C7622B63C2FD00D64E61 /* ListView.swift in Sources */,
 				0849C7642B63C63E00D64E61 /* DataManager.swift in Sources */,
 			);

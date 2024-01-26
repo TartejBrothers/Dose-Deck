@@ -7,16 +7,20 @@
 
 import SwiftUI
 import Firebase
+
 @main
 struct Dose_DeckApp: App {
+    @State private var userIsLogged = false
     @StateObject private var datamanager = DataManager()
-    init(){
+
+    init() {
         FirebaseApp.configure()
     }
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-            
+            ContentView(userIsLogged: $userIsLogged)
+                .environmentObject(datamanager)
         }
     }
 }
