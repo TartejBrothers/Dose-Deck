@@ -30,7 +30,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 25.0, style: .continuous)
                             .foregroundColor(Color(red:34.0/255.0, green:40.0/255.0, blue: 49.0/255.0, opacity: 1.0))
                         VStack(alignment: .center) {
-                            Text("Login")
+                            Text("Welcome")
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -38,7 +38,7 @@ struct ContentView: View {
                                 .padding(.vertical, 20)
                             Text("Enter Your Email")
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
+                                .foregroundColor(Color(red:1.0, green:1.0, blue: 1.0, opacity: 0.7))
                                 .offset(x: -100)
                             TextField("", text: $email)
                                 .accessibilityLabel("Email")
@@ -51,19 +51,36 @@ struct ContentView: View {
                                 .padding(.horizontal, 20)
                             Text("Enter Your Password")
                                 .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .offset(x: -90)
+                                .foregroundColor(Color(red:1.0, green:1.0, blue: 1.0, opacity: 0.7))
+                                .offset(x: -85)
                                 .padding(.top,20)
-                            TextField("", text: $email)
-                                .accessibilityLabel("Email")
+                            TextField("", text: $password)
+                                .accessibilityLabel("Password")
                                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                                 .foregroundColor(.white)
                                 .background(
                                     RoundedRectangle(cornerRadius: 25)
                                         .stroke(Color(red: 1.0, green: 1.0, blue: 1.0, opacity: 0.4), lineWidth: 1.0)
                                 )
-                                .padding(.horizontal, 20)
+                                .padding([.leading, .bottom, .trailing], 20)
+                            Button{
                                 
+                            } label: {
+                                Text("Sign Up")
+                                    .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height:40)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 20,style: .continuous ).fill(Color(.black)))
+                                    .foregroundColor(.white)
+                                    .padding(.bottom, 10)
+
+                            }
+                            Button{
+                                
+                            } label: {
+                                Text("Have an Account? Login here")
+                                    .foregroundColor(.white)
+                            }
+                            
                         
                         }
                     }
@@ -78,15 +95,4 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
 
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
-    }
-}
