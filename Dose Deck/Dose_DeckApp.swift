@@ -15,8 +15,8 @@ struct Dose_DeckApp: App {
     }
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            ListView().environmentObject(datamanager)
+            ContentView()
+            
         }
     }
 }

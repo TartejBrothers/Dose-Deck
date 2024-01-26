@@ -4,9 +4,10 @@ struct ContentView: View {
     @State private var email=""
     @State private var password=""
     @State private var userIsLogged=false
+    @StateObject private var datamanager = DataManager()
     var body: some View {
         if userIsLogged{
-            ListView()
+            ListView().environmentObject(datamanager)
         }
         else{
             content 
@@ -63,7 +64,7 @@ struct ContentView: View {
                                 .foregroundColor(Color(red:1.0, green:1.0, blue: 1.0, opacity: 0.7))
                                 .offset(x: -85)
                                 .padding(.top,20)
-                            TextField("", text: $password)
+                            SecureField("", text: $password)
                                 .accessibilityLabel("Password")
                                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                                 .foregroundColor(.white)
@@ -72,6 +73,7 @@ struct ContentView: View {
                                         .stroke(Color(red: 1.0, green: 1.0, blue: 1.0, opacity: 0.4), lineWidth: 1.0)
                                 )
                                 .padding([.leading, .bottom, .trailing], 20)
+
                             Button{
                                 register()
                             } label: {
