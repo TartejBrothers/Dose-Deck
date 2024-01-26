@@ -30,9 +30,9 @@ class DataManager: ObservableObject {
                     let id = data["id"] as? String,
                     let medicine = data["medicine"] as? String,
                     let hours = data["hours"] as? Int,
-                    let minutes = data["minutes"] as? Int {
-
-                    let meds = DataType(id: id, medicine: medicine, hours: hours, minutes: minutes)
+                    let minutes = data["minutes"] as? Int ,
+                    let isSelected = data["isSelected"] as? Bool {
+                    let meds = DataType(id: id, medicine: medicine, hours: hours, minutes: minutes, isSelected: isSelected)
                     self.med.append(meds)
                 }
             }
