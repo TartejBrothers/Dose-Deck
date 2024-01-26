@@ -91,8 +91,6 @@ struct ContentView: View {
                                 Text("Have an Account? Login here")
                                     .foregroundColor(.white)
                             }
-                            
-                        
                         }
                     }
                 }
