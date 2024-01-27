@@ -78,7 +78,11 @@ struct NewMed: View {
 
                 onAddMed(newMed)
                 datamanager.fetchData()  // Refresh data after adding a new medicine
-                dispatchNotification(for: newMed)
+
+                if isSelected {
+                    dispatchNotification(for: newMed)
+                }
+
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 Text("Save")
