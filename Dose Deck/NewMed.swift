@@ -3,11 +3,11 @@ import SwiftUI
 struct NewMed: View {
     @EnvironmentObject var datamanager: DataManager
     @State private var newmed = ""
-    @State private var newhours: Int?
-    @State private var newminutes: Int?
+    @State private var newhours = ""
+    @State private var newminutes = ""
     @State private var isSelected: Bool = false
     @Environment(\.presentationMode) var presentationMode
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
             Text("Add Details")
@@ -33,7 +33,7 @@ struct NewMed: View {
                 .foregroundColor(.white)
                 .padding(.bottom, -10)
             
-            TextField("", value: $newhours, formatter: NumberFormatter())
+            TextField("", text: $newhours)
                 .keyboardType(.numberPad)
                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                 .foregroundColor(.white)
@@ -47,7 +47,7 @@ struct NewMed: View {
                 .foregroundColor(.white)
                 .padding(.bottom, -10)
             
-            TextField("", value: $newminutes, formatter: NumberFormatter())
+            TextField("", text: $newminutes)
                 .keyboardType(.numberPad)
                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                 .foregroundColor(.white)
@@ -61,10 +61,13 @@ struct NewMed: View {
                 .foregroundColor(.white)
             
             Button {
-                datamanager.addmed(medicine: newmed, hours: newhours, minutes: newminutes, isSelected: isSelected)
-                    presentationMode.wrappedValue.dismiss()
-                                
-                                datamanager.fetchData()
+                // Convert String to Int
+                let hours = Int(newhours) ?? 0
+                let minutes = Int(newminutes) ?? 0
+
+                datamanager.addmed(medicine: newmed, hours: hours, minutes: minutes, isSelected: isSelected)
+                presentationMode.wrappedValue.dismiss()
+                datamanager.fetchData()
             } label: {
                 Text("Save")
                     .frame(width: 100, height: 40)
