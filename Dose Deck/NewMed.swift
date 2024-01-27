@@ -61,10 +61,12 @@ struct NewMed: View {
                 .foregroundColor(.white)
             
             Button {
-                // Convert String to Int
-                let hours = Int(newhours) ?? 0
-                let minutes = Int(newminutes) ?? 0
-
+                // Ensure the user provides valid inputs before adding the medicine
+                guard !newmed.isEmpty, let hours = Int(newhours), let minutes = Int(newminutes) else {
+                    // Handle invalid inputs
+                    return
+                }
+                
                 datamanager.addmed(medicine: newmed, hours: hours, minutes: minutes, isSelected: isSelected)
                 presentationMode.wrappedValue.dismiss()
                 datamanager.fetchData()
@@ -74,7 +76,6 @@ struct NewMed: View {
                     .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Color(.black)))
                     .foregroundColor(.white)
             }
-
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal, 20)
@@ -82,6 +83,7 @@ struct NewMed: View {
         .ignoresSafeArea()
     }
 }
+
 
 struct NewMed_Previews: PreviewProvider {
     static var previews: some View {
