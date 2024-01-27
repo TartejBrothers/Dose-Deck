@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DataType: Identifiable {
     var id: String
+    var userId: String 
     var medicine: String
     var hours: Int
     var minutes: Int

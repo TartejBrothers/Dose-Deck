@@ -4,7 +4,6 @@ import Firebase
 struct ListView: View {
     @EnvironmentObject var datamanager: DataManager
     @Binding var userIsLogged: Bool
-    @State private var redirectToLogin = false
     @State private var showPopup = false
 
     var body: some View {
@@ -14,7 +13,7 @@ struct ListView: View {
                     Text("No medicines available")
                 } else {
                     List {
-                        ForEach(datamanager.med) { meds in
+                        ForEach(datamanager.med.filter { $0.userId == Auth.auth().currentUser?.uid }) { meds in
                             HStack {
                                 Toggle(isOn: $datamanager.med[getIndex(for: meds)].isSelected) {
                                     VStack(alignment: .leading) {
@@ -28,41 +27,34 @@ struct ListView: View {
                     }
                 }
 
-                NavigationLink(
-                    destination: ContentView(userIsLogged: $userIsLogged),
-                    isActive: $redirectToLogin,
-                    label: {
-                        EmptyView()
-                    }
-                )
-                .hidden()
                 Button(action: {
                     showPopup.toggle()
-                }){
+                }) {
                     Text("Add Item")
                         .padding()
                         .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .sheet(isPresented: $showPopup) {
+                    if userIsLogged {
+                        NewMed()
+                    }
+                }
+
                 Button(action: {
                     do {
                         try Auth.auth().signOut()
                         userIsLogged = false
-                        redirectToLogin = true
-                        
                     } catch {
                         print("Error signing out: \(error.localizedDescription)")
                     }
-                }){
+                }) {
                     Text("Logout")
                         .padding()
                         .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
-                        .sheet(isPresented: $showPopup) {
-                            NewMed()
-                        }
                 }
             }
         }
