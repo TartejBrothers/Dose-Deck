@@ -4,97 +4,92 @@ import UserNotifications
 struct NewMed: View {
     @EnvironmentObject var datamanager: DataManager
     @State private var newmed = ""
-    @State private var newhours = ""
-    @State private var newminutes = ""
+    @State private var selectedHour = 0
+    @State private var selectedMinute = 0
     @State private var isSelected: Bool = false
     @Environment(\.presentationMode) var presentationMode
     let onAddMed: (DataType) -> Void
 
     var body: some View {
-        VStack(alignment: .center, spacing: 20) {
-            Text("Add Details")
-                .font(.title)
-                .foregroundColor(.white)
-                .padding(.bottom, 10)
+        NavigationView {
+            Form {
+                Section {
+                    VStack {
+                        Text("Add Details").font(.title2)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                   
+                }
+                
+                TextField("Medicine", text: $newmed)
+                
+                Section(header: Text("Time")) {
+                    HStack {
+                        Text("Hours")
+                        Spacer()
+                        Picker("Hour", selection: $selectedHour) {
+                            ForEach(0..<24, id: \.self) { hour in
+                                Text("\(hour)")
+                            }
+                        }
+                        .pickerStyle(WheelPickerStyle())
+                        .frame(width: 100, height: 100)
+                    }
 
-            Text("Medicine")
-                .offset(x: -130)
-                .foregroundColor(.white)
-                .padding(.bottom, -10)
-
-            TextField("", text: $newmed)
-                .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
-                .foregroundColor(.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(Color.gray, lineWidth: 1.0)
-                )
-
-            Text("Hour Clock")
-                .offset(x: -125)
-                .foregroundColor(.white)
-                .padding(.bottom, -10)
-
-            TextField("", text: $newhours)
-                .keyboardType(.numberPad)
-                .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
-                .foregroundColor(.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(Color.gray, lineWidth: 1.0)
-                )
-
-            Text("Minute Clock")
-                .offset(x: -117)
-                .foregroundColor(.white)
-                .padding(.bottom, -10)
-
-            TextField("", text: $newminutes)
-                .keyboardType(.numberPad)
-                .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
-                .foregroundColor(.white)
-                .background(
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(Color.gray, lineWidth: 1.0)
-                )
-
-            Toggle("Notification", isOn: $isSelected)
-                .padding()
-                .foregroundColor(.white)
-
-            Button {
-                guard !newmed.isEmpty, let hours = Int(newhours), let minutes = Int(newminutes) else {
-                    return
+                    HStack {
+                        Text("Minutes")
+                        Spacer()
+                        Picker("Minute", selection: $selectedMinute) {
+                            ForEach(0..<60, id: \.self) { minute in
+                                Text("\(minute)")
+                            }
+                        }
+                        .pickerStyle(WheelPickerStyle())
+                        .frame(width: 100, height: 100)
+                    }
                 }
 
-                let newMed = DataType(
-                    id: UUID().uuidString,
-                    userId: datamanager.userId ?? "",
-                    medicine: newmed,
-                    hours: hours,
-                    minutes: minutes,
-                    isSelected: isSelected
-                )
-
-                onAddMed(newMed)
-                datamanager.fetchData()  // Refresh data after adding a new medicine
-
-                if isSelected {
-                    dispatchNotification(for: newMed)
+                Section {
+                    Toggle("Notification", isOn: $isSelected)
                 }
 
-                presentationMode.wrappedValue.dismiss()
-            } label: {
-                Text("Save")
-                    .frame(width: 100, height: 40)
-                    .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Color(.black)))
-                    .foregroundColor(.white)
+                Section {
+                    Button("Save") {
+                        guard !newmed.isEmpty else {
+                            return
+                        }
+
+                        let newMed = DataType(
+                            id: UUID().uuidString,
+                            userId: datamanager.userId ?? "",
+                            medicine: newmed,
+                            hours: selectedHour,
+                            minutes: selectedMinute,
+                            isSelected: isSelected
+                        )
+
+                        onAddMed(newMed)
+                        datamanager.fetchData()
+
+                        if isSelected {
+                            dispatchNotification(for: newMed)
+                        }
+
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.green)
+                }
             }
+            .navigationBarItems(trailing: Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Image(systemName: "xmark.circle")
+                    .foregroundColor(.red)
+                    .imageScale(.large)
+            })
+            .background(Color(red: 34.0/255.0, green: 40.0/255.0, blue: 49.0/255.0, opacity: 1.0))
         }
-        .frame(maxHeight: .infinity)
-        .padding(.horizontal, 20)
-        .background(Color(red: 34.0/255.0, green: 40.0/255.0, blue: 49.0/255.0, opacity: 1.0))
-        .ignoresSafeArea()
     }
 
     func dispatchNotification(for meds: DataType) {
@@ -107,9 +102,9 @@ struct NewMed: View {
         content.body = body
         content.sound = .default
 
-        var dateComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
-        dateComponents.hour = meds.hours
-        dateComponents.minute = meds.minutes
+        var dateComponents = DateComponents()
+        dateComponents.hour = selectedHour
+        dateComponents.minute = selectedMinute
 
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
