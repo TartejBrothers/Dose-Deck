@@ -5,6 +5,7 @@ struct ListView: View {
     @EnvironmentObject var datamanager: DataManager
     @Binding var userIsLogged: Bool
     @State private var redirectToLogin = false
+    @State private var showPopup = false
 
     var body: some View {
         NavigationView {
@@ -27,8 +28,6 @@ struct ListView: View {
                     }
                 }
 
-                Text(userIsLogged ? "User is logged in" : "User is not logged in")
-
                 NavigationLink(
                     destination: ContentView(userIsLogged: $userIsLogged),
                     isActive: $redirectToLogin,
@@ -37,21 +36,33 @@ struct ListView: View {
                     }
                 )
                 .hidden()
-
+                Button(action: {
+                    showPopup.toggle()
+                }){
+                    Text("Add Item")
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
                 Button(action: {
                     do {
                         try Auth.auth().signOut()
                         userIsLogged = false
                         redirectToLogin = true
+                        
                     } catch {
                         print("Error signing out: \(error.localizedDescription)")
                     }
-                }) {
+                }){
                     Text("Logout")
                         .padding()
                         .background(Color.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
+                        .sheet(isPresented: $showPopup) {
+                            NewMed()
+                        }
                 }
             }
         }
