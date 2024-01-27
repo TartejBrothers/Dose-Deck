@@ -75,5 +75,10 @@ class DataManager: ObservableObject {
             }
         }
     }
+    func updateSelection(for meds: DataType, isSelected: Bool) {
+        if let index = med.firstIndex(where: { $0.id == meds.id }) {
+            med[index].isSelected = isSelected
+        }
+    }
 }
 

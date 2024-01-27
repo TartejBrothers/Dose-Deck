@@ -5,6 +5,7 @@ struct ListView: View {
     @EnvironmentObject var datamanager: DataManager
     @Binding var userIsLogged: Bool
     @State private var showPopup = false
+    @State private var dataLoaded = false
 
     var body: some View {
         NavigationView {
@@ -15,7 +16,19 @@ struct ListView: View {
                     List {
                         ForEach(datamanager.med.filter { $0.userId == Auth.auth().currentUser?.uid }) { meds in
                             HStack {
-                                Toggle(isOn: $datamanager.med[getIndex(for: meds)].isSelected) {
+                                Toggle(isOn: Binding(
+                                    get: {
+                                        if let index = getIndex(for: meds), index < datamanager.med.count {
+                                            return datamanager.med[index].isSelected
+                                        }
+                                        return false
+                                    },
+                                    set: { newValue in
+                                        if let index = getIndex(for: meds), index < datamanager.med.count {
+                                            datamanager.updateSelection(for: meds, isSelected: newValue)
+                                        }
+                                    }
+                                )) {
                                     VStack(alignment: .leading) {
                                         Text("Medicine: \(meds.medicine)")
                                         Text("Hours: \(meds.hours)")
@@ -28,7 +41,15 @@ struct ListView: View {
                 }
             }
             .onAppear {
-                datamanager.fetchData()
+                if !dataLoaded {
+                    datamanager.fetchData()
+                    dataLoaded = true
+                }
+            }
+            .onReceive(datamanager.$med) { _ in
+                if !dataLoaded {
+                    dataLoaded = true
+                }
             }
             .navigationBarItems(trailing:
                 HStack {
@@ -37,7 +58,7 @@ struct ListView: View {
                     }) {
                         Image(systemName: "plus")
                             .imageScale(.large)
-                            .padding()
+                            .padding([.top, .leading, .bottom], 10)
                     }
                     .sheet(isPresented: $showPopup) {
                         if userIsLogged {
@@ -49,24 +70,21 @@ struct ListView: View {
                         do {
                             try Auth.auth().signOut()
                             userIsLogged = false
+                            dataLoaded = false
                         } catch {
                             print("Error signing out: \(error.localizedDescription)")
                         }
                     }) {
-                        Image(systemName: "power")
-                            .imageScale(.large)
-                            .padding()
+                        Text("Logout")
+                            .padding([.top, .bottom, .trailing], 10)
                     }
                 }
             )
         }
     }
 
-    func getIndex(for meds: DataType) -> Int {
-        if let index = datamanager.med.firstIndex(where: { $0.id == meds.id }) {
-            return index
-        }
-        return 0
+    func getIndex(for meds: DataType) -> Int? {
+        return datamanager.med.firstIndex { $0.id == meds.id }
     }
 }
 
