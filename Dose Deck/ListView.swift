@@ -1,3 +1,4 @@
+// ListView.swift
 import SwiftUI
 import Firebase
 import UserNotifications
@@ -9,7 +10,6 @@ struct ListView: View {
     @State private var dataLoaded = false
 
     var body: some View {
-        checkForPermissions()
         NavigationView {
             VStack {
                 if datamanager.med.isEmpty {
@@ -28,10 +28,9 @@ struct ListView: View {
                                     set: { newValue in
                                         if let index = getIndex(for: meds), index < datamanager.med.count {
                                             datamanager.updateSelection(for: meds, isSelected: newValue)
-                                        }
-
-                                        if newValue {
-                                            scheduleNotification(for: meds)
+                                            if newValue {
+                                                scheduleNotification(for: meds)
+                                            }
                                         }
                                     }
                                 )) {
@@ -52,11 +51,6 @@ struct ListView: View {
                     dataLoaded = true
                 }
             }
-            .onReceive(datamanager.$med) { _ in
-                if !dataLoaded {
-                    dataLoaded = true
-                }
-            }
             .navigationBarItems(trailing:
                 HStack {
                     Button(action: {
@@ -68,7 +62,15 @@ struct ListView: View {
                     }
                     .sheet(isPresented: $showPopup) {
                         if userIsLogged {
-                            NewMed()
+                            NewMed(onAddMed: { newMed in
+                                datamanager.addmed(
+                                    medicine: newMed.medicine,
+                                    hours: newMed.hours,
+                                    minutes: newMed.minutes,
+                                    isSelected: newMed.isSelected
+                                )
+                                dataLoaded = false
+                            })
                         }
                     }
 
@@ -91,51 +93,6 @@ struct ListView: View {
 
     func getIndex(for meds: DataType) -> Int? {
         return datamanager.med.firstIndex { $0.id == meds.id }
-    }
-    func checkForPermissions() -> some View {
-        let notificationCenter = UNUserNotificationCenter.current()
-        notificationCenter.getNotificationSettings { settings in
-            switch settings.authorizationStatus {
-            case .authorized:
-                self.dispatchNotification()
-            case .denied:
-                return
-            case .notDetermined:
-                notificationCenter.requestAuthorization(options: [.alert, .sound]) { didAllow, error in
-                    if didAllow {
-                        self.dispatchNotification()
-                    }
-                }
-            default:
-                return
-            }
-        }
-        return EmptyView()
-    }
-
-
-    func dispatchNotification() {
-        let identifier = "morning"
-        let title = "Medicine Time"
-        let body = "Don't Forget to take medicines on time"
-        let hour = 21
-        let minute = 10
-        let isDaily = true
-        let notificationCenter = UNUserNotificationCenter.current()
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        let calendar = Calendar.current
-        var datecomponents = DateComponents(calendar: calendar, timeZone: TimeZone.current)
-        datecomponents.hour = hour
-        datecomponents.minute = minute
-
-        let trigger = UNCalendarNotificationTrigger(dateMatching: datecomponents, repeats: isDaily)
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-
-        notificationCenter.removePendingNotificationRequests(withIdentifiers: [identifier])
-        notificationCenter.add(request)
     }
 
     func scheduleNotification(for meds: DataType) {

@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct NewMed: View {
     @EnvironmentObject var datamanager: DataManager
@@ -7,6 +8,7 @@ struct NewMed: View {
     @State private var newminutes = ""
     @State private var isSelected: Bool = false
     @Environment(\.presentationMode) var presentationMode
+    let onAddMed: (DataType) -> Void
 
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
@@ -14,12 +16,12 @@ struct NewMed: View {
                 .font(.title)
                 .foregroundColor(.white)
                 .padding(.bottom, 10)
-            
+
             Text("Medicine")
                 .offset(x: -130)
                 .foregroundColor(.white)
                 .padding(.bottom, -10)
-            
+
             TextField("", text: $newmed)
                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                 .foregroundColor(.white)
@@ -27,12 +29,12 @@ struct NewMed: View {
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(Color.gray, lineWidth: 1.0)
                 )
-            
+
             Text("Hour Clock")
                 .offset(x: -125)
                 .foregroundColor(.white)
                 .padding(.bottom, -10)
-            
+
             TextField("", text: $newhours)
                 .keyboardType(.numberPad)
                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
@@ -41,12 +43,12 @@ struct NewMed: View {
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(Color.gray, lineWidth: 1.0)
                 )
-            
+
             Text("Minute Clock")
                 .offset(x: -117)
                 .foregroundColor(.white)
                 .padding(.bottom, -10)
-            
+
             TextField("", text: $newminutes)
                 .keyboardType(.numberPad)
                 .padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
@@ -55,21 +57,29 @@ struct NewMed: View {
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(Color.gray, lineWidth: 1.0)
                 )
-            
+
             Toggle("Notification", isOn: $isSelected)
                 .padding()
                 .foregroundColor(.white)
-            
+
             Button {
-                // Ensure the user provides valid inputs before adding the medicine
                 guard !newmed.isEmpty, let hours = Int(newhours), let minutes = Int(newminutes) else {
-                    // Handle invalid inputs
                     return
                 }
-                
-                datamanager.addmed(medicine: newmed, hours: hours, minutes: minutes, isSelected: isSelected)
+
+                let newMed = DataType(
+                    id: UUID().uuidString,
+                    userId: datamanager.userId ?? "",
+                    medicine: newmed,
+                    hours: hours,
+                    minutes: minutes,
+                    isSelected: isSelected
+                )
+
+                onAddMed(newMed)
+                datamanager.fetchData()  // Refresh data after adding a new medicine
+                dispatchNotification(for: newMed)
                 presentationMode.wrappedValue.dismiss()
-                datamanager.fetchData()
             } label: {
                 Text("Save")
                     .frame(width: 100, height: 40)
@@ -82,11 +92,35 @@ struct NewMed: View {
         .background(Color(red: 34.0/255.0, green: 40.0/255.0, blue: 49.0/255.0, opacity: 1.0))
         .ignoresSafeArea()
     }
-}
 
+    func dispatchNotification(for meds: DataType) {
+        let identifier = UUID().uuidString
+        let title = "Time for Medicine: \(meds.medicine)"
+        let body = "Take your medicine now."
+
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        var dateComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
+        dateComponents.hour = meds.hours
+        dateComponents.minute = meds.minutes
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error.localizedDescription)")
+            }
+        }
+    }
+}
 
 struct NewMed_Previews: PreviewProvider {
     static var previews: some View {
-        NewMed().environmentObject(DataManager())
+        NewMed(onAddMed: { _ in })
+            .environmentObject(DataManager())
     }
 }

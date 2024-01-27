@@ -111,7 +111,6 @@ struct ContentView: View {
             if error != nil {
                 print(error!.localizedDescription)
             } else {
-                // Set userId in DataManager
                 if let userId = Auth.auth().currentUser?.uid {
                     datamanager.setUserId(userId)
                 }
