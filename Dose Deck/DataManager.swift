@@ -3,7 +3,8 @@ import Firebase
 
 class DataManager: ObservableObject {
     @Published var med: [DataType] = []
-    init (){
+
+    init() {
         fetchData()
     }
     func fetchData() {
@@ -26,12 +27,13 @@ class DataManager: ObservableObject {
 
             for document in snapshot.documents {
                 let data = document.data()
+                let id = document.documentID
                 if
-                    let id = data["id"] as? String,
                     let medicine = data["medicine"] as? String,
-                    let hours = data["hours"] as? Int,
-                    let minutes = data["minutes"] as? Int ,
-                    let isSelected = data["isSelected"] as? Bool {
+                    let isSelected = data["isSelected"] as? Bool,
+                    let hours = data["hours"] as? Int? ?? 0, 
+                    let minutes = data["minutes"] as? Int? ?? 0 {
+
                     let meds = DataType(id: id, medicine: medicine, hours: hours, minutes: minutes, isSelected: isSelected)
                     self.med.append(meds)
                 }
@@ -42,5 +44,24 @@ class DataManager: ObservableObject {
     }
 
 
+
+
+
+    func addmed(medicine: String, hours: Int?, minutes: Int?, isSelected: Bool) {
+        let db = Firestore.firestore()
+        let ref = db.collection("DataType").document()
+
+        ref.setData([
+            "id": ref.documentID,
+            "medicine": medicine,
+            "hours": hours as Any?,
+            "minutes": minutes as Any?,
+            "isSelected": isSelected
+        ], merge: true) { error in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+    }
 
 }
