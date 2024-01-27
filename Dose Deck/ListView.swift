@@ -26,37 +26,39 @@ struct ListView: View {
                         }
                     }
                 }
-
-                Button(action: {
-                    showPopup.toggle()
-                }) {
-                    Text("Add Item")
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                .sheet(isPresented: $showPopup) {
-                    if userIsLogged {
-                        NewMed()
-                    }
-                }
-
-                Button(action: {
-                    do {
-                        try Auth.auth().signOut()
-                        userIsLogged = false
-                    } catch {
-                        print("Error signing out: \(error.localizedDescription)")
-                    }
-                }) {
-                    Text("Logout")
-                        .padding()
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
             }
+            .onAppear {
+                datamanager.fetchData()
+            }
+            .navigationBarItems(trailing:
+                HStack {
+                    Button(action: {
+                        showPopup.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                            .imageScale(.large)
+                            .padding()
+                    }
+                    .sheet(isPresented: $showPopup) {
+                        if userIsLogged {
+                            NewMed()
+                        }
+                    }
+
+                    Button(action: {
+                        do {
+                            try Auth.auth().signOut()
+                            userIsLogged = false
+                        } catch {
+                            print("Error signing out: \(error.localizedDescription)")
+                        }
+                    }) {
+                        Image(systemName: "power")
+                            .imageScale(.large)
+                            .padding()
+                    }
+                }
+            )
         }
     }
 
