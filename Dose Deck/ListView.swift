@@ -1,4 +1,3 @@
-// ListView.swift
 import SwiftUI
 import Firebase
 import UserNotifications
@@ -39,6 +38,13 @@ struct ListView: View {
                                         Text("Hours: \(meds.hours)")
                                         Text("Minutes: \(meds.minutes)")
                                     }
+                                }
+                                
+                                Button(action: {
+                                    deleteMedicine(meds)
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
                                 }
                             }
                         }
@@ -111,6 +117,29 @@ struct ListView: View {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Error scheduling notification: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func deleteMedicine(_ meds: DataType) {
+        if let index = getIndex(for: meds) {
+            // Remove from Firestore
+            deleteMedFromFirestore(meds)
+
+            // Remove from local array
+            datamanager.med.remove(at: index)
+        }
+    }
+
+    func deleteMedFromFirestore(_ meds: DataType) {
+        let db = Firestore.firestore()
+        let docRef = db.collection("DataType").document(meds.id)
+
+        docRef.delete { error in
+            if let error = error {
+                print("Error removing document: \(error.localizedDescription)")
+            } else {
+                print("Document successfully removed from Firestore")
             }
         }
     }
