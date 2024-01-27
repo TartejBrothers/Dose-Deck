@@ -12,7 +12,8 @@ struct ListView: View {
         NavigationView {
             VStack {
                 if datamanager.med.isEmpty {
-                    Text("No medicines available")
+                    Text("No medicine available")
+                        
                 } else {
                     List {
                         ForEach(datamanager.med.filter { $0.userId == Auth.auth().currentUser?.uid }) { meds in
@@ -35,11 +36,15 @@ struct ListView: View {
                                 )) {
                                     VStack(alignment: .leading) {
                                         Text("Medicine: \(meds.medicine)")
-                                        Text("Hours: \(meds.hours)")
-                                        Text("Minutes: \(meds.minutes)")
+
+                                        Text("Time: \(meds.hours):\(meds.minutes)")
+
                                     }
+
                                 }
-                                
+
+                                Spacer()
+
                                 Button(action: {
                                     deleteMedicine(meds)
                                 }) {
@@ -49,6 +54,7 @@ struct ListView: View {
                             }
                         }
                     }
+                    .listStyle(PlainListStyle())
                 }
             }
             .onAppear {
@@ -57,43 +63,42 @@ struct ListView: View {
                     dataLoaded = true
                 }
             }
-            .navigationBarItems(trailing:
-                HStack {
-                    Button(action: {
-                        showPopup.toggle()
-                    }) {
-                        Image(systemName: "plus")
-                            .imageScale(.large)
-                            .padding([.top, .leading, .bottom], 10)
+            .navigationBarItems(
+                leading: Button(action: {
+                    do {
+                        try Auth.auth().signOut()
+                        userIsLogged = false
+                        dataLoaded = false
+                    } catch {
+                        print("Error signing out: \(error.localizedDescription)")
                     }
-                    .sheet(isPresented: $showPopup) {
-                        if userIsLogged {
-                            NewMed(onAddMed: { newMed in
-                                datamanager.addmed(
-                                    medicine: newMed.medicine,
-                                    hours: newMed.hours,
-                                    minutes: newMed.minutes,
-                                    isSelected: newMed.isSelected
-                                )
-                                dataLoaded = false
-                            })
-                        }
-                    }
-
-                    Button(action: {
-                        do {
-                            try Auth.auth().signOut()
-                            userIsLogged = false
+                }) {
+                    Text("Logout")
+                        .padding([.top, .bottom, .trailing], 10)
+                        .foregroundColor(.red)
+                },
+                trailing: Button(action: {
+                    showPopup.toggle()
+                }) {
+                    Image(systemName: "plus")
+                        .imageScale(.large)
+                        .padding([.top, .leading, .bottom], 10)
+                }
+                .sheet(isPresented: $showPopup) {
+                    if userIsLogged {
+                        NewMed(onAddMed: { newMed in
+                            datamanager.addmed(
+                                medicine: newMed.medicine,
+                                hours: newMed.hours,
+                                minutes: newMed.minutes,
+                                isSelected: newMed.isSelected
+                            )
                             dataLoaded = false
-                        } catch {
-                            print("Error signing out: \(error.localizedDescription)")
-                        }
-                    }) {
-                        Text("Logout")
-                            .padding([.top, .bottom, .trailing], 10)
+                        })
                     }
                 }
             )
+            
         }
     }
 
@@ -120,13 +125,10 @@ struct ListView: View {
             }
         }
     }
-    
+
     func deleteMedicine(_ meds: DataType) {
         if let index = getIndex(for: meds) {
-            // Remove from Firestore
             deleteMedFromFirestore(meds)
-
-            // Remove from local array
             datamanager.med.remove(at: index)
         }
     }
@@ -148,6 +150,7 @@ struct ListView: View {
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
         ListView(userIsLogged: .constant(true))
+            .preferredColorScheme(.dark)
             .environmentObject(DataManager())
     }
 }
