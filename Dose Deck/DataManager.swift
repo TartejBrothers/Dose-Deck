@@ -3,6 +3,9 @@ import Firebase
 
 class DataManager: ObservableObject {
     @Published var med: [DataType] = []
+    @Published var showAlert = false
+    @Published var alertTitle = ""
+    @Published var alertMessage = ""
     var userId: String?
 
     init() {
@@ -94,6 +97,11 @@ class DataManager: ObservableObject {
             }
         }
     }
+    func showAlert(title: String, message: String) {
+           alertTitle = title
+           alertMessage = message
+           showAlert = true
+       }
 
 }
 

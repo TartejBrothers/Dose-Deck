@@ -86,6 +86,9 @@ struct ContentView: View {
                                         .foregroundColor(.white)
                                         .padding(.bottom, 10)
                                 }
+                                .alert(isPresented: $datamanager.showAlert) {
+                                    Alert(title: Text(datamanager.alertTitle), message: Text(datamanager.alertMessage), dismissButton: .default(Text("OK")))
+                                }
 
                                 Button(action: login) {
                                     Text("Have an Account? Login here")
@@ -111,6 +114,7 @@ struct ContentView: View {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
                 print(error!.localizedDescription)
+                datamanager.showAlert(title: "Error", message: "Invalid email or password.")
             } else {
                 if let userId = Auth.auth().currentUser?.uid {
                     datamanager.setUserId(userId)
@@ -124,6 +128,7 @@ struct ContentView: View {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if error != nil {
                 print(error!.localizedDescription)
+                datamanager.showAlert(title: "Error", message: "Unable to create an account. Please try again.")
             } else {
                 if let userId = Auth.auth().currentUser?.uid {
                     datamanager.setUserId(userId)
