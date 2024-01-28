@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// Creating the reference DataType
 struct DataType: Identifiable {
     var id: String
     var userId: String 

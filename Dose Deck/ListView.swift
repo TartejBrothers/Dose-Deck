@@ -3,12 +3,14 @@ import Firebase
 import UserNotifications
 
 struct ListView: View {
+    // Setting up variables
     @EnvironmentObject var datamanager: DataManager
     @Binding var userIsLogged: Bool
     let userId: String
     @State private var showPopup = false
     @State private var dataLoaded = false
-
+    
+    // Displaying the Data
     var body: some View {
         NavigationView {
             VStack {
@@ -70,7 +72,7 @@ struct ListView: View {
                         print("Error signing out: \(error.localizedDescription)")
                     }
                 }) {
-                    Text("Logout")
+                    Text("Logout") // Allows the user to logout from the app, no need for a specific user page.
                         .padding([.top, .bottom, .trailing], 10)
                         .foregroundColor(.red)
                 },
@@ -82,6 +84,7 @@ struct ListView: View {
                         .padding([.top, .leading, .bottom], 10)
                 }
                 .sheet(isPresented: $showPopup) {
+                    // Calls the NewMed view as a pop and allows the user to add Data
                     if userIsLogged {
                         NewMed(onAddMed: { newMed in
                             datamanager.addmed(
@@ -97,23 +100,23 @@ struct ListView: View {
             )
         }
     }
-
+    // Printing Elements as per the indexs
     func getIndex(for meds: DataType) -> Int? {
         return datamanager.med.firstIndex { $0.id == meds.id }
     }
-
+    // Removes the notification settings.
     func cancelNotification(for meds: DataType) {
         let identifier = meds.id 
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
-
+    // Removes the medicine from the datamanager
     func deleteMedicine(_ meds: DataType) {
         if let index = getIndex(for: meds) {
             deleteMedFromFirestore(meds)
             datamanager.med.remove(at: index)
         }
     }
-
+    // Called from deletemedicine, deletes data from Firestore
     func deleteMedFromFirestore(_ meds: DataType) {
         let db = Firestore.firestore()
         let docRef = db.collection("DataType").document(meds.id)
