@@ -5,6 +5,7 @@ import UserNotifications
 struct ListView: View {
     @EnvironmentObject var datamanager: DataManager
     @Binding var userIsLogged: Bool
+    let userId: String
     @State private var showPopup = false
     @State private var dataLoaded = false
 
@@ -129,8 +130,11 @@ struct ListView: View {
 
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
-        ListView(userIsLogged: .constant(true))
+        let userIdForPreview = "UserID"
+
+        return ListView(userIsLogged: .constant(true), userId: userIdForPreview)
             .preferredColorScheme(.dark)
             .environmentObject(DataManager())
     }
 }
+

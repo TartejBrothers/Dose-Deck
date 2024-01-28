@@ -7,6 +7,8 @@ struct ContentView: View {
     @State private var password = ""
     @Binding var userIsLogged: Bool
     @StateObject private var datamanager = DataManager()
+    
+    let userIdKey = "UserId"
 
     init(userIsLogged: Binding<Bool>) {
         _userIsLogged = userIsLogged
@@ -14,7 +16,7 @@ struct ContentView: View {
 
     var body: some View {
         if userIsLogged {
-            ListView(userIsLogged: $userIsLogged)
+            ListView(userIsLogged: $userIsLogged, userId: userIdKey)
                 .environmentObject(datamanager)
         } else {
             ZStack {
@@ -101,6 +103,7 @@ struct ContentView: View {
                 }
                 .onAppear {
                     requestNotificationPermission()
+                    loadUserIdFromUserDefaults()
 
                     Auth.auth().addStateDidChangeListener { auth, user in
                         if user != nil {
@@ -130,6 +133,7 @@ struct ContentView: View {
                 datamanager.showAlert(title: "Error", message: "Invalid email or password.")
             } else {
                 if let userId = Auth.auth().currentUser?.uid {
+                    saveUserIdToUserDefaults(userId)
                     datamanager.setUserId(userId)
                 }
                 userIsLogged = true
@@ -144,10 +148,25 @@ struct ContentView: View {
                 datamanager.showAlert(title: "Error", message: "Unable to create an account. Please try again.")
             } else {
                 if let userId = Auth.auth().currentUser?.uid {
+                    saveUserIdToUserDefaults(userId)
                     datamanager.setUserId(userId)
                 }
                 userIsLogged = true
             }
+        }
+    }
+
+    func saveUserIdToUserDefaults(_ userId: String) {
+        UserDefaults.standard.set(userId, forKey: userIdKey)
+    }
+
+    func getUserId() -> String? {
+        return UserDefaults.standard.string(forKey: userIdKey)
+    }
+
+    func loadUserIdFromUserDefaults() {
+        if let userId = getUserId() {
+            datamanager.setUserId(userId)
         }
     }
 }
