@@ -75,10 +75,25 @@ class DataManager: ObservableObject {
             }
         }
     }
-    func updateSelection(for meds: DataType, isSelected: Bool) {
-        if let index = med.firstIndex(where: { $0.id == meds.id }) {
+    func updateSelection(for medicine: DataType, isSelected: Bool) {
+        if let index = med.firstIndex(where: { $0.id == medicine.id }) {
             med[index].isSelected = isSelected
         }
+
+        // Update in Firestore
+        let db = Firestore.firestore()
+        let docRef = db.collection("DataType").document(medicine.id)
+
+        docRef.updateData([
+            "isSelected": isSelected
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error.localizedDescription)")
+            } else {
+                print("Document successfully updated in Firestore")
+            }
+        }
     }
+
 }
 
