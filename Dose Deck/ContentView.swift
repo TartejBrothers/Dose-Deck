@@ -32,6 +32,7 @@ struct ContentView: View {
                                 .padding(.top, 80.0)
                             Text("Create an Account or Login to Save Medical Records")
                                 .multilineTextAlignment(.center)
+                                .foregroundColor(.black)
                                 .padding(.top, 150.0)
                         }
                     }
