@@ -1,5 +1,6 @@
 import SwiftUI
 import Firebase
+import UserNotifications
 
 struct ContentView: View {
     @State private var email = ""
@@ -99,6 +100,8 @@ struct ContentView: View {
                     }
                 }
                 .onAppear {
+                    requestNotificationPermission()
+
                     Auth.auth().addStateDidChangeListener { auth, user in
                         if user != nil {
                             userIsLogged.toggle()
@@ -107,6 +110,16 @@ struct ContentView: View {
                 }
             }
             .ignoresSafeArea()
+        }
+    }
+
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notification permission granted")
+            } else if let error = error {
+                print("Error requesting notification permission: \(error.localizedDescription)")
+            }
         }
     }
 
