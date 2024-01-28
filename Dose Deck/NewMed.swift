@@ -9,7 +9,6 @@ struct NewMed: View {
     @State private var isSelected: Bool = false
     @Environment(\.presentationMode) var presentationMode
     let onAddMed: (DataType) -> Void
-
     var body: some View {
         NavigationView {
             Form {
@@ -18,11 +17,10 @@ struct NewMed: View {
                         Text("Add Details").font(.title2)
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
-                   
                 }
-                
+                // Taking in inputs
                 TextField("Medicine", text: $newmed)
-                
+                // Creating Time Picker for Clock
                 Section(header: Text("Time")) {
                     HStack {
                         Text("Hours")
@@ -48,11 +46,11 @@ struct NewMed: View {
                         .frame(width: 100, height: 100)
                     }
                 }
-
+                // Checking if the user wants notification or not
                 Section {
                     Toggle("Notification", isOn: $isSelected)
                 }
-
+                // Saving the data
                 Section {
                     Button("Save") {
                         guard !newmed.isEmpty else {
@@ -82,7 +80,7 @@ struct NewMed: View {
                 }
             }
             .navigationBarItems(trailing: Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                presentationMode.wrappedValue.dismiss() // Closing the popup
             }) {
                 Image(systemName: "xmark.circle")
                     .foregroundColor(.red)
@@ -91,7 +89,7 @@ struct NewMed: View {
             .background(Color(red: 34.0/255.0, green: 40.0/255.0, blue: 49.0/255.0, opacity: 1.0))
         }
     }
-
+    // Adding Notification to the stack
     func dispatchNotification(for meds: DataType) {
         let identifier = UUID().uuidString
         let title = "Time for Medicine: \(meds.medicine)"

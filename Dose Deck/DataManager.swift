@@ -2,12 +2,13 @@ import SwiftUI
 import Firebase
 
 class DataManager: ObservableObject {
+    // Setting up Notification Variables
     @Published var med: [DataType] = []
     @Published var showAlert = false
     @Published var alertTitle = ""
     @Published var alertMessage = ""
     var userId: String?
-
+    // Fetching the data from Firebase Databse
     init() {
         fetchData()
     }
@@ -15,14 +16,14 @@ class DataManager: ObservableObject {
     func setUserId(_ userId: String) {
         self.userId = userId
     }
-
+    // It checks for the userId is equal to the string value and only returns those collections.
     func fetchData() {
         med.removeAll()
         guard let userId = userId else {
             print("User ID not available")
             return
         }
-
+        // Firestore Setup
         let db = Firestore.firestore()
         let ref = db.collection("DataType").whereField("userId", isEqualTo: userId)
 
@@ -40,7 +41,7 @@ class DataManager: ObservableObject {
             for document in snapshot.documents {
                 let data = document.data()
                 let id = document.documentID
-
+                // Adding them to the datamanager to view it in the List View
                 if
                     let medicine = data["medicine"] as? String,
                     let isSelected = data["isSelected"] as? Bool,
@@ -55,7 +56,7 @@ class DataManager: ObservableObject {
             print("Fetched \(self.med.count) medicines")
         }
     }
-
+    // Function to Add Medicines to the database
     func addmed(medicine: String, hours: Int?, minutes: Int?, isSelected: Bool) {
         guard let userId = userId else {
             print("User ID not available")
@@ -64,7 +65,7 @@ class DataManager: ObservableObject {
 
         let db = Firestore.firestore()
         let ref = db.collection("DataType").document()
-
+        // Create a reference Schema
         ref.setData([
             "id": ref.documentID,
             "medicine": medicine,
@@ -78,6 +79,7 @@ class DataManager: ObservableObject {
             }
         }
     }
+    // Updating the user notification setting for the Medicine
     func updateSelection(for medicine: DataType, isSelected: Bool) {
         if let index = med.firstIndex(where: { $0.id == medicine.id }) {
             med[index].isSelected = isSelected
@@ -97,6 +99,7 @@ class DataManager: ObservableObject {
             }
         }
     }
+    // Notification 
     func showAlert(title: String, message: String) {
            alertTitle = title
            alertMessage = message

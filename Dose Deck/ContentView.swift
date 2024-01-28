@@ -3,31 +3,32 @@ import Firebase
 import UserNotifications
 
 struct ContentView: View {
+    // Setting Variables and assigning value to datamanager.
     @State private var email = ""
     @State private var password = ""
-    @Binding var userIsLogged: Bool
+    @Binding var userIsLogged: Bool // Checking if userisLoggedIn
     @StateObject private var datamanager = DataManager()
     
-    let userIdKey = "UserId"
-
+    let userIdKey = "UserId" // Assigned it to a temporary variable
+    
     init(userIsLogged: Binding<Bool>) {
-        _userIsLogged = userIsLogged
+        _userIsLogged = userIsLogged // Assigning Value to the Variable
     }
 
     var body: some View {
         if userIsLogged {
             ListView(userIsLogged: $userIsLogged, userId: userIdKey)
                 .environmentObject(datamanager)
+            // If logged in, taking the user to the Medicine Page
+            // Else giving the user the the option to create an account or login
         } else {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
-
                 VStack(alignment: .center) {
                     GeometryReader { geometry in
                         ZStack(alignment: .top){
                             RoundedRectangle(cornerRadius: 25.0, style: .continuous)
                                 .foregroundColor(.white)
-
                             Text("Dose Deck")
                                 .fontWeight(.bold)
                                 .foregroundColor(Color(red: 41.0/255.0, green: 51.0/255.0, blue: 120.0/255.0, opacity: 1.0))
@@ -104,18 +105,19 @@ struct ContentView: View {
                 .onAppear {
                     requestNotificationPermission()
                     loadUserIdFromUserDefaults()
-
                     Auth.auth().addStateDidChangeListener { auth, user in
                         if user != nil {
                             userIsLogged.toggle()
                         }
+                        // On appear, asking for notification permission for the first time
+                        // If user is present, loading the list view
                     }
                 }
             }
             .ignoresSafeArea()
         }
     }
-
+    // Asking for permission
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
@@ -125,7 +127,7 @@ struct ContentView: View {
             }
         }
     }
-
+    // Firebase Login function
     func login() {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if error != nil {
@@ -140,7 +142,7 @@ struct ContentView: View {
             }
         }
     }
-
+    // Firebase signup function, and once the account is created, it will take them to list view
     func register() {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if error != nil {
@@ -155,15 +157,15 @@ struct ContentView: View {
             }
         }
     }
-
+    // Saving the user details, only the userID
     func saveUserIdToUserDefaults(_ userId: String) {
         UserDefaults.standard.set(userId, forKey: userIdKey)
     }
-
+    // Calling for the userId
     func getUserId() -> String? {
         return UserDefaults.standard.string(forKey: userIdKey)
     }
-
+    // Loading the userID
     func loadUserIdFromUserDefaults() {
         if let userId = getUserId() {
             datamanager.setUserId(userId)

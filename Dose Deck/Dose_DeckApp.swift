@@ -12,7 +12,7 @@ import Firebase
 struct Dose_DeckApp: App {
     @State private var userIsLogged = false
     @StateObject private var datamanager = DataManager()
-
+    
     init() {
         FirebaseApp.configure()
     }
