@@ -13,7 +13,6 @@ struct ListView: View {
             VStack {
                 if datamanager.med.isEmpty {
                     Text("No medicine available")
-                        
                 } else {
                     List {
                         ForEach(datamanager.med.filter { $0.userId == Auth.auth().currentUser?.uid }) { meds in
@@ -28,19 +27,16 @@ struct ListView: View {
                                     set: { newValue in
                                         if let index = getIndex(for: meds), index < datamanager.med.count {
                                             datamanager.updateSelection(for: meds, isSelected: newValue)
-                                            if newValue {
-                                                scheduleNotification(for: meds)
+                                            if !newValue {
+                                                cancelNotification(for: meds)
                                             }
                                         }
                                     }
                                 )) {
                                     VStack(alignment: .leading) {
                                         Text("Medicine: \(meds.medicine)")
-
                                         Text("Time: \(meds.hours):\(meds.minutes)")
-
                                     }
-
                                 }
 
                                 Spacer()
@@ -98,7 +94,6 @@ struct ListView: View {
                     }
                 }
             )
-            
         }
     }
 
@@ -106,24 +101,9 @@ struct ListView: View {
         return datamanager.med.firstIndex { $0.id == meds.id }
     }
 
-    func scheduleNotification(for meds: DataType) {
-        let content = UNMutableNotificationContent()
-        content.title = "Time for Medicine: \(meds.medicine)"
-        content.body = "Take your medicine now."
-
-        var dateComponents = Calendar.current.dateComponents([.hour, .minute], from: Date())
-        dateComponents.hour = meds.hours
-        dateComponents.minute = meds.minutes
-
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
-            }
-        }
+    func cancelNotification(for meds: DataType) {
+        let identifier = meds.id 
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
 
     func deleteMedicine(_ meds: DataType) {
