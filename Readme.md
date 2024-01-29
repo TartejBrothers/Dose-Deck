@@ -9,7 +9,7 @@ A medical record app for iOS that lets user to save medicine and time to take th
 
 ## Screenshots
 
-<img src="readme/readme1.jpg" alt="">
+<img src="readme/readme1.jpeg" alt="">
 <br />
 <img src="readme/readme3.PNG" alt="">
 <br />
